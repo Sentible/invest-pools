@@ -1,0 +1,4 @@
+{
+  "solidity.defaultCompiler": "remote",
+  "solidity.remappings":["@openzeppelin/=/Users/watch_/Documents/Development/sentible.ai/invest-pools/node_modules/@openzeppelin"]
+}

@@ -1,0 +1,1 @@
+[{"inputs":[{"internalType":"address","name":"delegatee","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approveDelegation","outputs":[],"stateMutability":"nonpayable","type":"function"}]

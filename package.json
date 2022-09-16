@@ -1,0 +1,24 @@
+{
+  "name": "invest-pools",
+  "version": "1.0.0",
+  "description": "Simple config file to track the investment pools by category.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kantelabs: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@github.com/Sentible/invest-pools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sentible/invest-pools/issues"
+  },
+  "homepage": "https://github.com/Sentible/invest-pools#readme",
+  "dependencies": {
+    "@aave/protocol-v2": "^1.0.1",
+    "@openzeppelin/contracts": "3.4.0",
+    "solc": "^0.8.17"
+  }
+}
