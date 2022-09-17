@@ -1,32 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0 <0.9.0;
-/// @title Sentible Pool Router Contract
-/// @author Sentible
+pragma solidity >=0.6.12 < 0.9.0;
+pragma experimental ABIEncoderV2;
+/// @title Sentible v1 Router Contract
+/// @author SentibleLabs
 /// @notice This contract is used to deposit and withdraw from the Sentible Pool
-// import "@aave/protocol-v2/contracts/interfaces/IAToken.sol";
-// import "@aave/protocol-v2/contracts/interfaces/ILendingPoolAddressesProvider.sol";
-// import "@aave/protocol-v2/contracts/interfaces/IVariableDebtToken.sol";
-// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
-
-
-interface IERC20 {
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
-}
-
-interface IDebtToken {
-  function approveDelegation(address delegatee, uint256 amount) external;
-}
-
-interface IAaveProtocolDataProvider {
-  function getReserveTokensAddresses(address asset) external view returns (address aTokenAddress, address stableDebtTokenAddress, address variableDebtTokenAddress);
-}
+import "@aave/protocol-v2/contracts/interfaces/IAToken.sol";
 
 interface AaveLendingPool {
   function deposit(
@@ -35,6 +13,21 @@ interface AaveLendingPool {
     address onBehalfOf,
     uint16 referralCode
   ) external;
+
+  function getReserveData(address asset) external view returns (
+    uint256 configuration,
+    uint128 liquidityIndex,
+    uint128 variableBorrowIndex,
+    uint128 currentLiquidityRate,
+    uint128 currentVariableBorrowRate,
+    uint128 currentStableBorrowRate,
+    uint40 lastUpdateTimestamp,
+    address aTokenAddress,
+    address stableDebtTokenAddress,
+    address variableDebtTokenAddress,
+    address interestRateStrategyAddress,
+    uint8 id
+  );
 
   function withdraw(
     address asset,
@@ -45,73 +38,72 @@ interface AaveLendingPool {
   function paused() external view returns (bool);
 }
 
-contract Deposit {
-  address owner;
-  address public v2PoolAddress;
+contract SentibleRouterV1 {
+  address public owner;
+  address public lendingPoolAddress;
   bool public isPaused = false;
-  AaveLendingPool aaveLendingPool = AaveLendingPool(v2PoolAddress);
-  IAaveProtocolDataProvider provider = IAaveProtocolDataProvider(address(v2PoolAddress));
+  AaveLendingPool aaveLendingPool;
 
-  // event NewDeposit(address owner, uint256 amount, address depositTo);
+  event Deposit(address owner, uint256 amount, address asset);
+  event Withdraw(address owner, uint256 amount, address asset);
 
-  modifier onlyOwner() {
-    require(msg.sender == owner);
+  modifier poolActive {
+    require(!aaveLendingPool.paused(), "Aave contract is paused");
+    require(!isPaused, "Sentible contract is paused");
+    _;
+  }
+
+  modifier onlyOwner {
+    require(msg.sender == owner, "Only owner can call this function");
     _;
   }
 
   constructor() public {
     owner = msg.sender;
-    v2PoolAddress = 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9;
+    lendingPoolAddress = 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9;
+    aaveLendingPool = AaveLendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
   }
 
-  // function approveUserReserve(address asset, uint256 amount) public {
-  //   (address aTokenAddress,,) = provider.getReserveTokensAddresses(asset);
-  //   address borrower = address(this);
-  //   IAToken(aTokenAddress).approve(borrower, amount);
-  //   IAToken(aTokenAddress).transferFrom(msg.sender, borrower, amount);
-  // }
-
-  function approveAsset(address asset, uint256 amount, address spender) public onlyOwner {
-    require(msg.sender == owner);
+  function approveSpender(address asset, uint256 amount, address spender) public onlyOwner {
     IERC20(asset).approve(spender, amount);
   }
 
+  function approvePool(address asset, uint256 amount) public onlyOwner {
+    IERC20(asset).approve(lendingPoolAddress, amount);
+  }
+
+  // Deposit to lending pool
   function deposit(
     address asset,
     uint256 amount,
     address onBehalfOf
-  ) public payable {
-    uint allowedValue = IERC20(asset).allowance(address(this), msg.sender);
-    require(allowedValue <=amount, "Allowance required");
-    require(!aaveLendingPool.paused(), "Aave contract is paused");
-    require(!isPaused, "Deposit contract is paused");
+  ) public poolActive {
+    require(IERC20(asset).allowance(msg.sender, address(this)) >= amount, "Allowance required");
 
-    IERC20(asset).approve(v2PoolAddress, amount);
+    IERC20(asset).approve(lendingPoolAddress, amount);
     IERC20(asset).transferFrom(msg.sender, address(this), amount);
     aaveLendingPool.deposit(asset, amount, onBehalfOf, 0);
+    emit Deposit(msg.sender, amount, asset);
   }
 
   function withdraw(
     address asset,
     uint256 amount,
     address to
-  ) public {
-    IERC20 assetToken = IERC20(asset);
-    require(!aaveLendingPool.paused(), "Aave contract is paused");
-    require(!isPaused, "Deposit contract is paused");
-    // require(assetToken.approve(address(assetToken), amount), "Approve failed");
+  ) public poolActive {
+    (, , , , , , , address aTokenAddress, , , , ) = aaveLendingPool.getReserveData(asset);
+    address borrower = address(this);
+    IAToken aToken = IAToken(aTokenAddress);
 
-    assetToken.transferFrom(msg.sender, address(this), amount);
-    assetToken.approve(v2PoolAddress, amount);
-    aaveLendingPool.withdraw(address(assetToken), amount, address(this));
-    assetToken.transferFrom(address(this), to, amount);
+    aToken.transferFrom(msg.sender, borrower, amount);
+    aaveLendingPool.withdraw(asset, amount, to);
+    emit Withdraw(msg.sender, amount, asset);
   }
 
-  function setPoolAddress(address _poolAddress) public onlyOwner{
+  function setPoolAddress(address _poolAddress) public onlyOwner {
     require(msg.sender == owner, "Only owner can set pool address");
-    v2PoolAddress = _poolAddress;
+    lendingPoolAddress = _poolAddress;
     aaveLendingPool = AaveLendingPool(_poolAddress);
-    provider = IAaveProtocolDataProvider(address(_poolAddress));
   }
 
   function setPaused(bool _isPaused) public onlyOwner {
