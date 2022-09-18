@@ -86,6 +86,7 @@ contract SentibleRouterV1 {
     emit Deposit(msg.sender, amount, asset);
   }
 
+  // Withdraw from lending pool
   function withdraw(
     address asset,
     uint256 amount,
@@ -93,13 +94,14 @@ contract SentibleRouterV1 {
   ) public poolActive {
     (, , , , , , , address aTokenAddress, , , , ) = aaveLendingPool.getReserveData(asset);
     address borrower = address(this);
-    IAToken aToken = IAToken(aTokenAddress);
+    IERC20 aToken = IAToken(aTokenAddress);
 
     aToken.transferFrom(msg.sender, borrower, amount);
     aaveLendingPool.withdraw(asset, amount, to);
     emit Withdraw(msg.sender, amount, asset);
   }
 
+  // Set Pool Address
   function setPoolAddress(address _poolAddress) public onlyOwner {
     require(msg.sender == owner, "Only owner can set pool address");
     lendingPoolAddress = _poolAddress;
