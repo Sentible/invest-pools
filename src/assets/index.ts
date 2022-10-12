@@ -1,105 +1,113 @@
-import aaave from './aaave.svg';
-import aampl from './aampl.svg';
-import aavax from './aavax.svg';
-import abal from './abal.svg';
-import abat from './abat.svg';
-import abusd from './abusd.svg';
-import acrv from './acrv.svg';
-import adai from './adai.svg';
-import adpi from './adpi.svg';
-import aenj from './aenj.svg';
-import aeth from './aeth.svg';
-import aeurs from './aeurs.svg';
-import afei from './afei.svg';
-import afrax from './afrax.svg';
-import agusd from './agusd.svg';
-import aknc from './aknc.svg';
-import alend from './alend.svg';
-import alink from './alink.svg';
-import amana from './amana.svg';
-import amatic from './amatic.svg';
-import amkr from './amkr.svg';
-import apax from './apax.svg';
-import arai from './arai.svg';
-import aren from './aren.svg';
-import arenfil from './arenfil.svg';
-import arep from './arep.svg';
-import asnx from './asnx.svg';
-import astkaave from './astkaave.svg';
-import asusd from './asusd.svg';
-import atusd from './atusd.svg';
-import auni from './auni.svg';
-import ausdc from './ausdc.svg';
-import ausdp from './ausdp.svg';
-import ausdt from './ausdt.svg';
-import awbtc from './awbtc.svg';
-import aweth from './aweth.svg';
-import awmatic from './awmatic.svg';
-import axsushi from './axsushi.svg';
-import ayfi from './ayfi.svg';
-import azrx from './azrx.svg';
-import aftm from './aftm.svg';
-import aone from './aone.svg';
-import awftm from './awftm.svg';
-import awone from './awone.svg';
-import aghst from './aghst.svg';
-import ashushi from './ashushi.svg';
-import asteth from './asteth.svg';
-import aens from './aens.svg';
-import aust from './aust.svg';
+import aave from './aave.svg';
+import ampl from './ampl.svg';
+import avax from './avax.svg';
+import bal from './bal.svg';
+import bat from './bat.svg';
+import bpt from './bpt.svg';
+import busd from './busd.svg';
+import crv from './crv.svg';
+import dai from './dai.svg';
+import dpi from './dpi.svg';
+import enj from './enj.svg';
+import eth from './eth.svg';
+import eurs from './eurs.svg';
+import fei from './fei.svg';
+import frax from './frax.svg';
+import gusd from './gusd.svg';
+import knc from './knc.svg';
+import lend from './lend.svg';
+import link from './link.svg';
+import mana from './mana.svg';
+import matic from './matic.svg';
+import mkr from './mkr.svg';
+import pax from './pax.svg';
+import rai from './rai.svg';
+import ren from './ren.svg';
+import renfil from './renfil.svg';
+import rep from './rep.svg';
+import seth from './seth.svg';
+import snx from './snx.svg';
+import stkaave from './stkAAVE.svg';
+import susd from './susd.svg';
+import tribe from './tribe.svg';
+import tusd from './tusd.svg';
+import uni from './uni.svg';
+import usdc from './usdc.svg';
+import usdp from './usdp.svg';
+import usdt from './usdt.svg';
+import wavax from './wavax.svg';
+import wbtc from './wbtc.svg';
+import weth from './weth.svg';
+import wmatic from './wmatic.svg';
+import xsushi from './xsushi.svg';
+import yfi from './yfi.svg';
+import zrx from './zrx.svg';
+import ftm from './ftm.svg';
+import one from './one.svg';
+import wftm from './wftm.svg';
+import wone from './wone.svg';
+import ghst from './ghst.svg';
+import sushi from './sushi.svg';
+import steth from './steth.svg';
+import ens from './ens.svg';
+import ust from './ust.svg';
 
 interface Images {
   [name: string]: string;
 }
 
 export default {
-  asusd,
-  asnx,
-  atusd,
-  ausdt,
-  ausdc,
-  adai,
-  abusd,
-  aeth,
-  arep,
-  abat,
-  alink,
-  amkr,
-  amana,
-  azrx,
-  aknc,
-  awbtc,
-  alend,
-  aenj,
-  aren,
-  aaave,
-  ayfi,
-  astkaave,
-  agusd,
-  auni,
-  aweth,
-  acrv,
-  abal,
-  axsushi,
-  amatic,
-  arenfil,
-  aampl,
-  arai,
-  apax,
-  adpi,
-  aavax,
-  afrax,
-  afei,
-  ausdp,
-  aeurs,
-  awmatic,
-  aftm,
-  aone,
-  awftm,
-  awone,
-  aghst,
-  ashushi,
-  asteth,
-  aens,
-  aust,
+  aave,
+  ampl,
+  busd,
+  bat,
+  dai,
+  eth,
+  knc,
+  lend,
+  link,
+  mana,
+  mkr,
+  rep,
+  seth,
+  snx,
+  susd,
+  tusd,
+  usdc,
+  usdt,
+  wbtc,
+  zrx,
+  enj,
+  ren,
+  yfi,
+  uni,
+  gusd,
+  weth,
+  bpt,
+  stkaave,
+  crv,
+  bal,
+  xsushi,
+  matic,
+  renfil,
+  rai,
+  pax,
+  dpi,
+  avax,
+  wavax,
+  frax,
+  fei,
+  usdp,
+  tribe,
+  eurs,
+  wmatic,
+  ftm,
+  one,
+  wftm,
+  wone,
+  ghst,
+  sushi,
+  steth,
+  ens,
+  ust,
 } as Images;
